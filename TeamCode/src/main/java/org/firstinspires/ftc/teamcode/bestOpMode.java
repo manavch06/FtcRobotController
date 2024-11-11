@@ -41,10 +41,7 @@ public class bestOpMode extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor frontLeftMotor;
-    private DcMotor frontRightMotor;
-    private DcMotor backLeftMotor;
-    private DcMotor backRightMotor;
+    private DcMotor linearActuator;
     driveMech drive = new driveMech();
 
     /*
@@ -54,6 +51,9 @@ public class bestOpMode extends OpMode
     public void init() {
         drive.init(hardwareMap);
         telemetry.addData("Status", "Initialized");
+
+        linearActuator  = hardwareMap.dcMotor.get("linearActuator");
+        linearActuator.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     @Override
@@ -66,8 +66,17 @@ public class bestOpMode extends OpMode
     public void loop() {
         double forwardBackward = -gamepad1.left_stick_y;
         double turn = gamepad1.right_stick_x;
+        boolean actuatorUp = gamepad1.dpad_up;
+        boolean actuatorDown = gamepad1.dpad_down;
 
         drive.drive(forwardBackward, turn);
+        if (actuatorUp) {
+            linearActuator.setPower(0.5);
+        } else if (actuatorDown) {
+            linearActuator.setPower(-0.5);
+        } else {
+            linearActuator.setPower(0);
+        }
     }
 
     @Override
