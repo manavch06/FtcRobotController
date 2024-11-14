@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.driveMech;
 
@@ -42,6 +43,7 @@ public class bestOpMode extends OpMode
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor linearActuator;
+    private Servo clawServo;
     driveMech drive = new driveMech();
 
     /*
@@ -54,6 +56,7 @@ public class bestOpMode extends OpMode
 
         linearActuator  = hardwareMap.dcMotor.get("linearActuator");
         linearActuator.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        clawServo = hardwareMap.servo.get("servo");
     }
 
     @Override
@@ -68,14 +71,23 @@ public class bestOpMode extends OpMode
         double turn = gamepad1.right_stick_x;
         boolean actuatorUp = gamepad1.dpad_up;
         boolean actuatorDown = gamepad1.dpad_down;
+        boolean clawOpen = gamepad1.a;
+        boolean clawClose = gamepad1.b;
 
         drive.drive(forwardBackward, turn);
+
         if (actuatorUp) {
             linearActuator.setPower(0.5);
         } else if (actuatorDown) {
             linearActuator.setPower(-0.5);
         } else {
             linearActuator.setPower(0);
+        }
+
+        if (clawOpen) {
+            clawServo.setPosition(0);
+        } else if (clawClose) {
+            clawServo.setPosition(0.5);
         }
     }
 
