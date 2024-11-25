@@ -43,7 +43,7 @@ public class bestOpMode extends OpMode
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor linearActuator;
-    private Servo clawServo;
+    //private Servo clawServo;
     driveMech drive = new driveMech();
 
     /*
@@ -55,8 +55,8 @@ public class bestOpMode extends OpMode
         telemetry.addData("Status", "Initialized");
 
         linearActuator  = hardwareMap.dcMotor.get("linearActuator");
-        linearActuator.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        clawServo = hardwareMap.servo.get("servo");
+        linearActuator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        //clawServo = hardwareMap.servo.get("servo");
     }
 
     @Override
@@ -77,18 +77,18 @@ public class bestOpMode extends OpMode
         drive.drive(forwardBackward, turn);
 
         if (actuatorUp) {
-            linearActuator.setPower(0.5);
-        } else if (actuatorDown) {
             linearActuator.setPower(-0.5);
+        } else if (actuatorDown) {
+            linearActuator.setPower(0.5);
         } else {
             linearActuator.setPower(0);
         }
 
-        if (clawOpen) {
-            clawServo.setPosition(0);
-        } else if (clawClose) {
-            clawServo.setPosition(0.5);
-        }
+        //if (clawOpen) {
+            //clawServo.setPosition(0);
+        //} else if (clawClose) {
+            //clawServo.setPosition(0.5);
+        //}
     }
 
     @Override
