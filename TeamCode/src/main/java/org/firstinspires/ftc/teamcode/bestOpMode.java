@@ -43,8 +43,14 @@ public class bestOpMode extends OpMode
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor linearActuator;
-    //private Servo clawServo;
+    //private DcMotor claw;
     driveMech drive = new driveMech();
+    static final double     COUNTS_PER_MOTOR_REV    = 537.7 ;    // eg: TETRIX Motor Encoder
+    static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // No External Gearing.
+    static final double     WHEEL_DIAMETER_INCHES   = 1.4 ;     // For figuring circumference
+    static final double     COUNTS_PER_INCH_LINEAR  = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+            (WHEEL_DIAMETER_INCHES * 3.1415);
+    static final double COUNTS_PER_INCH_CLAW = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION);
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -55,8 +61,12 @@ public class bestOpMode extends OpMode
         telemetry.addData("Status", "Initialized");
 
         linearActuator  = hardwareMap.dcMotor.get("linearActuator");
-        linearActuator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        //clawServo = hardwareMap.servo.get("servo");
+        linearActuator.setDirection(DcMotor.Direction.REVERSE);
+        //linearActuator.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        linearActuator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //claw = hardwareMap.dcMotor.get("claw");
+        //claw.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //claw.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     @Override
@@ -71,23 +81,60 @@ public class bestOpMode extends OpMode
         double turn = gamepad1.right_stick_x;
         boolean actuatorUp = gamepad1.dpad_up;
         boolean actuatorDown = gamepad1.dpad_down;
+        boolean actuatorRight = gamepad1.dpad_right;
         boolean clawOpen = gamepad1.a;
         boolean clawClose = gamepad1.b;
 
         drive.drive(forwardBackward, turn);
 
         if (actuatorUp) {
+            linearActuator.setTargetPosition((int) (10.0 * COUNTS_PER_INCH_LINEAR));
+            linearActuator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             linearActuator.setPower(-0.5);
+            linearActuator.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            while (linearActuator.isBusy()) {
+                telemetry.addData("Status", "linearActuator moving");
+            }
+        } else if(actuatorRight) {
+            linearActuator.setTargetPosition((int) (20.0 * COUNTS_PER_INCH_LINEAR));
+            linearActuator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            linearActuator.setPower(-0.5);
+            linearActuator.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            while (linearActuator.isBusy()) {
+                telemetry.addData("Status", "linearActuator moving");
+            }
         } else if (actuatorDown) {
-            linearActuator.setPower(0.5);
+            linearActuator.setTargetPosition(0);
+            linearActuator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            linearActuator.setPower(-0.1);
+            while (linearActuator.isBusy()) {
+                telemetry.addData("Status", "linearActuator moving");
+            }
         } else {
+            linearActuator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             linearActuator.setPower(0);
         }
 
+        // Turn On RUN_TO_POSITION
+
+        // reset the timeout time and start motion.
+        runtime.reset();
         //if (clawOpen) {
-            //clawServo.setPosition(0);
+            //claw.setTargetPosition((int) (.1 * COUNTS_PER_INCH_CLAW));
+            //claw.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            //claw.setPower(0.5);
+            //claw.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            //while (claw.isBusy()) {
+                //telemetry.addData("Status", "claw moving");
+            //}
         //} else if (clawClose) {
-            //clawServo.setPosition(0.5);
+            //claw.setTargetPosition(0);
+            //claw.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            //claw.setPower(0.5);
+            //claw.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            //while (claw.isBusy()) {
+                //telemetry.addData("Status", "claw moving");
+            //}
         //}
     }
 
