@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.driveMech;
 
@@ -41,11 +42,15 @@ public class bestOpMode extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor frontLeftMotor;
-    private DcMotor frontRightMotor;
-    private DcMotor backLeftMotor;
-    private DcMotor backRightMotor;
+    private DcMotor linearActuator;
+    //private DcMotor claw;
     driveMech drive = new driveMech();
+    static final double     COUNTS_PER_MOTOR_REV    = 537.7 ;    // eg: TETRIX Motor Encoder
+    static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // No External Gearing.
+    static final double     WHEEL_DIAMETER_INCHES   = 1.4 ;     // For figuring circumference
+    static final double     COUNTS_PER_INCH_LINEAR  = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+            (WHEEL_DIAMETER_INCHES * 3.1415);
+    static final double COUNTS_PER_INCH_CLAW = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION);
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -54,6 +59,14 @@ public class bestOpMode extends OpMode
     public void init() {
         drive.init(hardwareMap);
         telemetry.addData("Status", "Initialized");
+
+        linearActuator  = hardwareMap.dcMotor.get("linearActuator");
+        linearActuator.setDirection(DcMotor.Direction.REVERSE);
+        //linearActuator.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        linearActuator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //claw = hardwareMap.dcMotor.get("claw");
+        //claw.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //claw.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     @Override
@@ -66,8 +79,63 @@ public class bestOpMode extends OpMode
     public void loop() {
         double forwardBackward = -gamepad1.left_stick_y;
         double turn = gamepad1.right_stick_x;
+        boolean actuatorUp = gamepad1.dpad_up;
+        boolean actuatorDown = gamepad1.dpad_down;
+        boolean actuatorRight = gamepad1.dpad_right;
+        boolean clawOpen = gamepad1.a;
+        boolean clawClose = gamepad1.b;
 
         drive.drive(forwardBackward, turn);
+
+        if (actuatorUp) {
+            linearActuator.setTargetPosition((int) (28.0 * COUNTS_PER_INCH_LINEAR)); //Height of lower net is 25.75 inches
+            linearActuator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            linearActuator.setPower(-0.5);
+            linearActuator.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            while (linearActuator.isBusy()) {
+                telemetry.addData("Status", "linearActuator moving");
+            }
+        } else if(actuatorRight) {
+            linearActuator.setTargetPosition((int) (47.0 * COUNTS_PER_INCH_LINEAR)); //Height of upper net is 43 inches
+            linearActuator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            linearActuator.setPower(-0.5);
+            linearActuator.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            while (linearActuator.isBusy()) {
+                telemetry.addData("Status", "linearActuator moving");
+            }
+        } else if (actuatorDown) {
+            linearActuator.setTargetPosition(0);
+            linearActuator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            linearActuator.setPower(-0.1);
+            while (linearActuator.isBusy()) {
+                telemetry.addData("Status", "linearActuator moving");
+            }
+        } else {
+            linearActuator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            linearActuator.setPower(0);
+        }
+
+        // Turn On RUN_TO_POSITION
+
+        // reset the timeout time and start motion.
+        runtime.reset();
+        //if (clawOpen) {
+            //claw.setTargetPosition((int) (.1 * COUNTS_PER_INCH_CLAW));
+            //claw.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            //claw.setPower(0.5);
+            //claw.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            //while (claw.isBusy()) {
+                //telemetry.addData("Status", "claw opening");
+            //}
+        //} else if (clawClose) {
+            //claw.setTargetPosition(0);
+            //claw.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            //claw.setPower(0.5);
+            //claw.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            //while (claw.isBusy()) {
+                //telemetry.addData("Status", "claw closing");
+            //}
+        //}
     }
 
     @Override
