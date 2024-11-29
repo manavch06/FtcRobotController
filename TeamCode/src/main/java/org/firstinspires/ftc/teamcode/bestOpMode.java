@@ -88,7 +88,7 @@ public class bestOpMode extends OpMode
         drive.drive(forwardBackward, turn);
 
         if (actuatorUp) {
-            linearActuator.setTargetPosition((int) (10.0 * COUNTS_PER_INCH_LINEAR));
+            linearActuator.setTargetPosition((int) (28.0 * COUNTS_PER_INCH_LINEAR)); //Height of lower net is 25.75 inches
             linearActuator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             linearActuator.setPower(-0.5);
             linearActuator.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -96,7 +96,7 @@ public class bestOpMode extends OpMode
                 telemetry.addData("Status", "linearActuator moving");
             }
         } else if(actuatorRight) {
-            linearActuator.setTargetPosition((int) (20.0 * COUNTS_PER_INCH_LINEAR));
+            linearActuator.setTargetPosition((int) (47.0 * COUNTS_PER_INCH_LINEAR)); //Height of upper net is 43 inches
             linearActuator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             linearActuator.setPower(-0.5);
             linearActuator.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -125,7 +125,7 @@ public class bestOpMode extends OpMode
             //claw.setPower(0.5);
             //claw.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             //while (claw.isBusy()) {
-                //telemetry.addData("Status", "claw moving");
+                //telemetry.addData("Status", "claw opening");
             //}
         //} else if (clawClose) {
             //claw.setTargetPosition(0);
@@ -133,7 +133,7 @@ public class bestOpMode extends OpMode
             //claw.setPower(0.5);
             //claw.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             //while (claw.isBusy()) {
-                //telemetry.addData("Status", "claw moving");
+                //telemetry.addData("Status", "claw closing");
             //}
         //}
     }
