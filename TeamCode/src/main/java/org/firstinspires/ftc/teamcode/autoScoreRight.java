@@ -36,7 +36,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="Park Left", group="Robot")
+@Autonomous(name="Score Right", group="Robot")
 public class autoScoreRight extends LinearOpMode {
     private DcMotor frontLeftMotor;
     private DcMotor frontRightMotor;
