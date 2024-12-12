@@ -16,8 +16,8 @@ public class driveMech {
         backLeftMotor = hardwareMap.dcMotor.get("backLeftMotor");
         backRightMotor = hardwareMap.dcMotor.get("backRightMotor");
 
-        frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
-        backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        //frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        //backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
 
         frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -26,10 +26,10 @@ public class driveMech {
     }
 
     private void setPower(double frontLeftPower, double frontRightPower, double backLeftPower, double backRightPower) {
-        frontLeftMotor.setPower(frontLeftPower);
-        frontRightMotor.setPower(frontRightPower);
-        backLeftMotor.setPower(backLeftPower);
-        backRightMotor.setPower(backRightPower);
+        frontLeftMotor.setPower(frontLeftPower/2);
+        frontRightMotor.setPower(frontRightPower/2);
+        backLeftMotor.setPower(backLeftPower/2);
+        backRightMotor.setPower(backRightPower/2);
     }
 
     public void drive(double forward, double rotate) {
@@ -38,10 +38,10 @@ public class driveMech {
         double backLeft = 0;
         double backRight = 0;
         if ((forward > 0.1 || forward < -0.1) && (rotate < 0.15 && rotate > -0.15)) {
-            frontLeft = -forward;
-            frontRight = -forward;
-            backLeft = -forward;
-            backRight = -forward;
+            frontLeft = forward;
+            frontRight = forward;
+            backLeft = forward;
+            backRight = forward;
         } else if ((rotate > 0.1 || rotate < -0.1) && (forward < 0.15 && forward > -0.15)) {
             frontLeft = rotate;
             frontRight = -rotate;
