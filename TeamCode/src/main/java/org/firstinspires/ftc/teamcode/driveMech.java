@@ -32,6 +32,19 @@ public class driveMech {
         backRightMotor.setPower(backRightPower/2);
     }
 
+    public double getPowerFrontLeft() {
+        return frontLeftMotor.getPower();
+    }
+    public double getPowerFrontRight() {
+        return frontRightMotor.getPower();
+    }
+    public double getPowerBackLeft() {
+        return backLeftMotor.getPower();
+    }
+    public double getPowerBackRight() {
+        return backRightMotor.getPower();
+    }
+
     public void drive(double theta, double power, double turn) {
 
         double sin = Math.sin(theta - Math.PI/4);

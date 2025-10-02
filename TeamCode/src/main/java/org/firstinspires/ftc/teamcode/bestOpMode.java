@@ -69,8 +69,6 @@ public class bestOpMode extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor linearActuator;
-    private DcMotor claw;
     driveMech drive = new driveMech();
     static final double     COUNTS_PER_MOTOR_REV    = 537.7 ;    // eg: TETRIX Motor Encoder
     static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // No External Gearing.
@@ -86,34 +84,34 @@ public class bestOpMode extends OpMode
     public void init() {
         drive.init(hardwareMap);
         telemetry.addData("Status", "Initialized");
-
-        linearActuator  = hardwareMap.dcMotor.get("linearActuator");
-        linearActuator.setDirection(DcMotor.Direction.REVERSE);
-        linearActuator.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        linearActuator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        linearActuator.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        claw = hardwareMap.dcMotor.get("clawServo");
-        claw.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     @Override
     public void start() {
         telemetry.addData("Status", "Started");
+        telemetry.addData("Front Left Power:", drive.getPowerFrontLeft());
+        telemetry.addData("Front Right Power:", drive.getPowerFrontRight());
+        telemetry.addData("Back Left Power:", drive.getPowerBackLeft());
+        telemetry.addData("Back Right Power:", drive.getPowerBackRight());
         runtime.reset();
     }
 
     @Override
     public void loop() {
-        double x = -gamepad1.left_stick_y;
-        double y = gamepad1.left_stick_x;
+        telemetry.addData("Status", "Running");
+        telemetry.addData("Front Left Power:", drive.getPowerFrontLeft());
+        telemetry.addData("Front Right Power:", drive.getPowerFrontRight());
+        telemetry.addData("Back Left Power:", drive.getPowerBackLeft());
+        telemetry.addData("Back Right Power:", drive.getPowerBackRight());
+
+        double x = gamepad1.left_stick_x;
+        double y = -gamepad1.left_stick_y;
         double turn = gamepad1.right_stick_x;
 
         double theta = Math.atan2(y, x);
         double power = Math.hypot(x, y);
 
         drive.drive(theta, power, turn);
-
-        // Turn On RUN_TO_POSITION
 
         // reset the timeout time and start motion.
         runtime.reset();
