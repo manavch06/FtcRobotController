@@ -102,10 +102,10 @@ public class bestOpMode extends OpMode
         telemetry.addData("Front Left Power:", drive.getPowerFrontLeft());
         telemetry.addData("Front Right Power:", drive.getPowerFrontRight());
         telemetry.addData("Back Left Power:", drive.getPowerBackLeft());
-        telemetry.addData("Back Right Power:", drive.getPowerBackRight());
+        telemetry.addData("Back Right Power:", drive.getPowerBackRight());d
 
         double x = gamepad1.left_stick_x;
-        double y = -gamepad1.left_stick_y;
+        double y = gamepad1.left_stick_y;
         double turn = gamepad1.right_stick_x;
 
         double theta = Math.atan2(y, x);
