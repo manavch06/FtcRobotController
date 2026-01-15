@@ -76,6 +76,7 @@ public class bestOpMode extends OpMode
     static final double     COUNTS_PER_INCH_LINEAR  = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
     static final double COUNTS_PER_INCH_CLAW = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION);
+    private DcMotor launcher;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -83,6 +84,12 @@ public class bestOpMode extends OpMode
     @Override
     public void init() {
         drive.init(hardwareMap);
+        launcher = hardwareMap.dcMotor.get("launcher");
+        launcher.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        launcher.setDirection(DcMotor.Direction.REVERSE);
+
+        launcher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         telemetry.addData("Status", "Initialized");
     }
 
@@ -102,7 +109,7 @@ public class bestOpMode extends OpMode
         telemetry.addData("Front Left Power:", drive.getPowerFrontLeft());
         telemetry.addData("Front Right Power:", drive.getPowerFrontRight());
         telemetry.addData("Back Left Power:", drive.getPowerBackLeft());
-        telemetry.addData("Back Right Power:", drive.getPowerBackRight());d
+        telemetry.addData("Back Right Power:", drive.getPowerBackRight());
 
         double x = gamepad1.left_stick_x;
         double y = gamepad1.left_stick_y;
@@ -112,6 +119,20 @@ public class bestOpMode extends OpMode
         double power = Math.hypot(x, y);
 
         drive.drive(theta, power, turn);
+
+        boolean a = gamepad2.a;
+        if (a) {
+            int pos = launcher.getCurrentPosition();
+            launcher.setPower(0.15);
+            launcher.setTargetPosition(pos + 1000);
+            launcher.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            while (launcher.isBusy()) {
+                telemetry.addData("Path", "Processing");
+            }
+            telemetry.addData("Path", "Complete");
+            launcher.setPower(0);
+            launcher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
 
         // reset the timeout time and start motion.
         runtime.reset();
