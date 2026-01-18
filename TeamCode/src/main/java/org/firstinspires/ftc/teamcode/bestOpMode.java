@@ -77,6 +77,8 @@ public class bestOpMode extends OpMode
             (WHEEL_DIAMETER_INCHES * 3.1415);
     static final double COUNTS_PER_INCH_CLAW = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION);
     private DcMotor launcher;
+    private DcMotor launcher2;
+    private Servo ballLoader;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -85,10 +87,16 @@ public class bestOpMode extends OpMode
     public void init() {
         drive.init(hardwareMap);
         launcher = hardwareMap.dcMotor.get("launcher");
+        launcher2 = hardwareMap.dcMotor.get("launcher21111");
         launcher.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        launcher2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         launcher.setDirection(DcMotor.Direction.REVERSE);
 
         launcher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        launcher2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        ballLoader = hardwareMap.servo.get("ballLoader");
+        ballLoader.setPosition(0);
 
         telemetry.addData("Status", "Initialized");
     }
@@ -123,17 +131,34 @@ public class bestOpMode extends OpMode
         boolean a = gamepad2.a;
         if (a) {
             int pos = launcher.getCurrentPosition();
-            launcher.setPower(0.15);
-            launcher.setTargetPosition(pos + 1000);
+            int pos2 = launcher2.getCurrentPosition();
+            launcher.setPower(0.1);
+            launcher2.setPower(0.1);
+            launcher.setTargetPosition(pos + 50);
+            launcher2.setTargetPosition(pos2 + 50);
             launcher.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            while (launcher.isBusy()) {
+            launcher2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            while (launcher.isBusy() && launcher2.isBusy()) {
                 telemetry.addData("Path", "Processing");
             }
             telemetry.addData("Path", "Complete");
             launcher.setPower(0);
             launcher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            launcher2.setPower(0);
+            launcher2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
 
+        boolean b = gamepad2.b;
+        if (b) {
+            double pos = ballLoader.getPosition();
+            ballLoader.setPosition(1);
+        }
+
+        boolean yButton = gamepad2.y;
+        if (yButton) {
+            ballLoader.setPosition(0.5);
+        }
+        
         // reset the timeout time and start motion.
         runtime.reset();
     }
