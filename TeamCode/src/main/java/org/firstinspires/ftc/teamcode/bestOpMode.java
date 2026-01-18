@@ -77,6 +77,7 @@ public class bestOpMode extends OpMode
             (WHEEL_DIAMETER_INCHES * 3.1415);
     static final double COUNTS_PER_INCH_CLAW = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION);
     private DcMotor launcher;
+    private DcMotor launcher2;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -85,10 +86,15 @@ public class bestOpMode extends OpMode
     public void init() {
         drive.init(hardwareMap);
         launcher = hardwareMap.dcMotor.get("launcher");
+        launcher2 = hardwareMap.dcMotor.get("launcher21111");
+
         launcher.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        launcher2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         launcher.setDirection(DcMotor.Direction.REVERSE);
 
         launcher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        launcher2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         telemetry.addData("Status", "Initialized");
     }
