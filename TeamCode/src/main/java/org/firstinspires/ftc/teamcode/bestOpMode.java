@@ -130,7 +130,7 @@ public class bestOpMode extends OpMode
         if (a) {
             int pos = launcher.getCurrentPosition();
             launcher.setPower(0.15);
-            launcher.setTargetPosition(pos + 1000);
+            launcher.setTargetPosition(pos + 100);
             launcher.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             while (launcher.isBusy()) {
                 telemetry.addData("Path", "Processing");
