@@ -129,15 +129,21 @@ public class bestOpMode extends OpMode
         boolean a = gamepad2.a;
         if (a) {
             int pos = launcher.getCurrentPosition();
-            launcher.setPower(0.15);
-            launcher.setTargetPosition(pos + 100);
+            int pos2 = launcher2.getCurrentPosition();
+            launcher.setPower(0.1);
+            launcher2.setPower(0.1);
+            launcher.setTargetPosition(pos + 50);
+            launcher2.setTargetPosition(pos2 + 50);
             launcher.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            while (launcher.isBusy()) {
+            launcher2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            while (launcher.isBusy() && launcher2.isBusy()) {
                 telemetry.addData("Path", "Processing");
             }
             telemetry.addData("Path", "Complete");
             launcher.setPower(0);
             launcher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            launcher2.setPower(0);
+            launcher2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
 
         // reset the timeout time and start motion.
