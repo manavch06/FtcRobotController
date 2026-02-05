@@ -27,10 +27,10 @@ public class driveMech {
     }
 
     private void setPower(double frontLeftPower, double frontRightPower, double backLeftPower, double backRightPower) {
-        frontLeftMotor.setPower(frontLeftPower/2);
-        frontRightMotor.setPower(frontRightPower/2);
-        backLeftMotor.setPower(-(backLeftPower/2)); // moves in wrong direction
-        backRightMotor.setPower(backRightPower/2);
+        frontLeftMotor.setPower(frontLeftPower);
+        frontRightMotor.setPower(frontRightPower);
+        backLeftMotor.setPower(-(backLeftPower)); // moves in wrong direction
+        backRightMotor.setPower(backRightPower);
     }
 
     public double getPowerFrontLeft() {
@@ -52,10 +52,10 @@ public class driveMech {
         double cos = Math.cos(theta - Math.PI/4);
         double max = Math.max(Math.abs(sin), Math.abs(cos));
 
-        double frontLeft = power * cos/max + turn;
-        double frontRight = power * sin/max - turn;
-        double backLeft = power * sin/max + turn;
-        double backRight = power * cos/max - turn;
+        double frontLeft = (power * sin/max - turn) / .9;
+        double frontRight = (power * cos/max + turn) / .9;
+        double backLeft = (power * cos/max - turn) / .9;
+        double backRight = (power * sin/max + turn) / .9;
 
         if((power + Math.abs(turn)) > 1) {
             frontLeft /= power + turn;

@@ -56,15 +56,18 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import static java.lang.Thread.sleep;
+
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.driveMech;
 
-@TeleOp(name="I don't know. What should I call the teleop? Be Like Ryke. I don't know. I think our teleop should be um...Something German. Let me google it...Something German...Not helpful Not helpful. Ok, wait, wait, wait. Sid Meier's Civilization VIII. And then what am I gonna do. But now I can do it all in my head. Journey Before Destination. Be Like Ryke. Be Like Ryke. Be Like Ryke. Be Like Ryke. BE LIKE RYKE! BE LIKE RYKE! BE LIKE RYKE! BE LIKE RYKE! BE LIKE RYKE! Teleop", group="Iterative OpMode")
+@TeleOp(name="I don't know. What should I call the teleop? Be Like Ryke. I don't know. I think our teleop should be um...Something German. Let me google it...Something German...Not helpful Not helpful. Ok, wait, wait, wait. Sid Meier's Civilization VIII. And then what am I gonna do. But now I can do it all in my head. Journey Before Destination. Be Like Ryke. Be Like Ryke. Be Like Ryke. Be Like Ryke. BE LIKE RYKE! BE LIKE RYKE! BE LIKE RYKE! BE LIKE RYKE! BE LIKE RYKE! What should it be? It gotta be generational. What should we make it? It should be really german. The dutch are not german. The dutch did not invade Poland. This is generational. We will be generational Teleop", group="Iterative OpMode")
 public class bestOpMode extends OpMode
 {
     // Declare OpMode members.
@@ -96,7 +99,7 @@ public class bestOpMode extends OpMode
         launcher2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         ballLoader = hardwareMap.servo.get("ballLoader");
-        ballLoader.setPosition(0);
+        ballLoader.setPosition(.375);
 
         telemetry.addData("Status", "Initialized");
     }
@@ -132,32 +135,28 @@ public class bestOpMode extends OpMode
         if (a) {
             int pos = launcher.getCurrentPosition();
             int pos2 = launcher2.getCurrentPosition();
-            launcher.setPower(0.1);
-            launcher2.setPower(0.1);
-            launcher.setTargetPosition(pos + 50);
-            launcher2.setTargetPosition(pos2 + 50);
+            launcher.setPower(0.85);
+            launcher2.setPower(0.85);
+            launcher.setTargetPosition(pos + 2000);
+            launcher2.setTargetPosition(pos2 + 2000);
             launcher.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             launcher2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            double time = getRuntime();
+            ballLoader.setPosition(-.9);
+            while ((getRuntime() - time) < 1.0) {
+                telemetry.addData("Servo", "Servo");
+            }
+            ballLoader.setPosition(0.375);
             while (launcher.isBusy() && launcher2.isBusy()) {
                 telemetry.addData("Path", "Processing");
             }
             telemetry.addData("Path", "Complete");
             launcher.setPower(0);
-            launcher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             launcher2.setPower(0);
+            launcher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             launcher2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
 
-        boolean b = gamepad2.b;
-        if (b) {
-            double pos = ballLoader.getPosition();
-            ballLoader.setPosition(1);
-        }
-
-        boolean yButton = gamepad2.y;
-        if (yButton) {
-            ballLoader.setPosition(0.5);
-        }
         
         // reset the timeout time and start motion.
         runtime.reset();
