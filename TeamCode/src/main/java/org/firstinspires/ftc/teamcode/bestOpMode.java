@@ -81,7 +81,6 @@ public class bestOpMode extends OpMode
     static final double COUNTS_PER_INCH_CLAW = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION);
     private DcMotor launcher;
     private DcMotor launcher2;
-    private Servo ballLoader;
 
     /*
      * Code to run ONCE when the driver hits INIT
